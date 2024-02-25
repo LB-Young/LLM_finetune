@@ -1,5 +1,6 @@
 """
 pip install -q datasets trl peft bitsandbytes sentencepiece wandb accelerate
+tools: trl
 """
 import os
 import gc
