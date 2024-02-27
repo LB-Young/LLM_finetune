@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 """
+!pip install -q datasets trl peft bitsandbytes sentencepiece wandb
 tools: trl
 """
 import os
