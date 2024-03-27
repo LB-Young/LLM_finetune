@@ -1,0 +1,24 @@
+export CUDA_VISIBLE_DEVICES=6
+python main.py \
+    --do_train \
+    --train_file train.json \
+    --validation_file dev.json \
+    --preprocessing_num_workers 1 \
+    --prompt_column instruction \
+    --response_column output \
+    --overwrite_cache \
+    --model_name_or_path models/chatglm3-6b/ \
+    --output_dir output/adgen-chatglm2-6b-lora_version \
+    --overwrite_output_dir \
+    --max_source_length 64 \
+    --max_target_length 128 \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 1 \
+    --gradient_accumulation_steps 16 \
+    --predict_with_generate \
+    --max_steps 20 \
+    --logging_steps 10 \
+    --save_steps 10 \
+    --learning_rate 2e-5 \
+    --lora_r 1 \
+    --model_parallel_mode True
