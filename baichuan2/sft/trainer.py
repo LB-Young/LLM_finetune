@@ -102,8 +102,8 @@ if __name__ == "__main__":
     LORA_R = 32
     # LORA_ALPHA = 16
     LORA_DROPOUT = 0.05
-    TARGET_MODULES = ["c_attn", "c_proj", "w1", "w2"]
-    # TARGET_MODULES = ["W_pack", "o_proj", "gate_proj", "down_proj"]
+    # TARGET_MODULES = ["c_attn", "c_proj", "w1", "w2"]
+    TARGET_MODULES = ["W_pack", "o_proj", "gate_proj", "down_proj"]
     config = LoraConfig(
         r=LORA_R,
         # lora_alpha=LORA_ALPHA,
