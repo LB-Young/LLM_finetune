@@ -20,14 +20,10 @@
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 from peft import LoraConfig, get_peft_model
-
-import torch
 from datasets import Dataset, load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, TrainingArguments
 from transformers.generation.utils import GenerationConfig
-
 from trl import SFTTrainer
-
 
 # Define and parse arguments.
 @dataclass
@@ -63,7 +59,7 @@ class ScriptArguments:
 def get_dataset(train_data_path: str, silent: bool = False, cache_dir: str = None) -> Tuple[Dataset, Dataset]:
 
     datasetall = load_dataset(
-        "json",
+        path="json",
         data_files={
             train_data_path
         },
@@ -85,18 +81,18 @@ def get_dataset(train_data_path: str, silent: bool = False, cache_dir: str = Non
 
 
 if __name__ == "__main__":
-    parser = HfArgumentParser((ScriptArguments, TrainingArguments))
-    script_args, training_args = parser.parse_args_into_dataclasses()  # [0]
+    parser = HfArgumentParser(dataclass_types=(ScriptArguments, TrainingArguments))
+    script_args, training_args = parser.parse_args_into_dataclasses()
 
     # 1. load a pretrained model
     model = AutoModelForCausalLM.from_pretrained(
-        script_args.model_name_or_path,
+        pretrained_model_name_or_path=script_args.model_name_or_path,
         trust_remote_code=True,
         torch_dtype='auto',
         # device_map='auto'
     )
     model.generation_config = GenerationConfig.from_pretrained(
-        script_args.model_name_or_path)
+        pretrained_model_name=script_args.model_name_or_path)
 
     # 1.1 laod peft model
     LORA_R = 32
@@ -112,11 +108,11 @@ if __name__ == "__main__":
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model = get_peft_model(model, config)
+    model = get_peft_model(model=model, peft_config=config)
     model.print_trainable_parameters()
 
     tokenizer = AutoTokenizer.from_pretrained(
-        script_args.model_name_or_path, trust_remote_code=True)
+        pretrained_model_name_or_path=script_args.model_name_or_path, trust_remote_code=True)
     tokenizer.pad_token_id = tokenizer.eod_id
 
     with training_args.main_process_first(desc="loading and tokenization"):
@@ -124,9 +120,9 @@ if __name__ == "__main__":
         train_dataset, eval_dataset = get_dataset(
             train_data_path=script_args.train_data)
 
-    # 5. initialize the DPO trainer
+    # 5. initialize the SFT trainer
     sft_trainer = SFTTrainer(
-        model,
+        model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
