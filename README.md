@@ -7,19 +7,26 @@ https://github.com/yuanzhoulvpi2017/zero_nlp
 https://github.com/mlabonne/llm-course
 
 ### 主要内容
-# 主要模型
+### 主要模型
+
+1. baichuan2：
 ```
-    baichuan2：
         sft
         dpo
         kto
-    Qwen：
+```
+2. Qwen：
+```
         sft
         ppo
         dpo
         kto
-    ChatGLM：
+```
+3. ChatGLM：
+```
         sft
-    Mixtral-Mistral
+```
+4. Mixtral-Mistral
+```
         sft
 ```

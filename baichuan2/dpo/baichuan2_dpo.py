@@ -13,19 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Note: you need to install transformers from main to run this script. See https://huggingface.co/docs/transformers/installation#install-from-source
-# TODO: bump transformers version in requirements at next release.
 
-# 0. imports
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 from peft import LoraConfig, get_peft_model
-
 import torch
 from datasets import Dataset, load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, TrainingArguments
 from transformers.generation.utils import GenerationConfig
-
 from trl import DPOTrainer
 
 

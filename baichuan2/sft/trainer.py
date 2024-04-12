@@ -13,10 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Note: you need to install transformers from main to run this script. See https://huggingface.co/docs/transformers/installation#install-from-source
-# TODO: bump transformers version in requirements at next release.
-
-# 0. imports
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 from peft import LoraConfig, get_peft_model
@@ -98,7 +94,7 @@ if __name__ == "__main__":
     LORA_R = 32
     # LORA_ALPHA = 16
     LORA_DROPOUT = 0.05
-    # TARGET_MODULES = ["c_attn", "c_proj", "w1", "w2"]
+    # TARGET_MODULES = ["c_attn", "c_proj", "w1", "w2"]  # Qwen
     TARGET_MODULES = ["W_pack", "o_proj", "gate_proj", "down_proj"]
     config = LoraConfig(
         r=LORA_R,
@@ -111,16 +107,17 @@ if __name__ == "__main__":
     model = get_peft_model(model=model, peft_config=config)
     model.print_trainable_parameters()
 
+    # 2. Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(
         pretrained_model_name_or_path=script_args.model_name_or_path, trust_remote_code=True)
     tokenizer.pad_token_id = tokenizer.eod_id
 
+    # 3. Load train and Load evaluation dataset
     with training_args.main_process_first(desc="loading and tokenization"):
-        # 2. Load train and Load evaluation dataset
         train_dataset, eval_dataset = get_dataset(
             train_data_path=script_args.train_data)
 
-    # 5. initialize the SFT trainer
+    # 4. initialize the SFT trainer
     sft_trainer = SFTTrainer(
         model=model,
         args=training_args,
