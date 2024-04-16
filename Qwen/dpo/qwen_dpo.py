@@ -42,7 +42,7 @@ class ScriptArguments:
 
     # traindata parameters
     train_data: Optional[str] = field(
-        default="/data2/huzheng/train_dpo/data/hh-rlhf", metadata={"help": "训练数据的位置"})
+        default="/data2/xxxxx/train_dpo/data/hh-rlhf", metadata={"help": "训练数据的位置"})
 
     # training parameters
     model_name_or_path: Optional[str] = field(

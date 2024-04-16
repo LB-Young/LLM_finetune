@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 from peft import LoraConfig, get_peft_model
 
-import torch
 from datasets import Dataset, load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, TrainingArguments
 from transformers.generation.utils import GenerationConfig
@@ -34,7 +33,7 @@ from trl import SFTTrainer
 class ScriptArguments:
     # traindata parameters
     train_data: Optional[str] = field(
-        default="/data2/huzheng/train_dpo/data/hh-rlhf", metadata={"help": "训练数据的位置"})
+        default="/data2/xxx/train_dpo/data/hh-rlhf", metadata={"help": "训练数据的位置"})
 
     # training parameters
     model_name_or_path: Optional[str] = field(
