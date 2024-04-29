@@ -30,7 +30,7 @@ class ScriptArguments:
 
     # training parameters
     model_name_or_path: Optional[str] = field(
-        default="gpt2", metadata={"help": "the model name"})
+        default="", metadata={"help": "the model name"})
 
     max_length: Optional[int] = field(
         default=512, metadata={"help": "max length of each sample"})
