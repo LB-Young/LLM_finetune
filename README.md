@@ -11,16 +11,11 @@ https://github.com/mlabonne/llm-course
 
 1. baichuan2：
 ```
-        sft
-        dpo
-        kto
+        sft\dpo\kto
 ```
 2. Qwen：
 ```
-        sft
-        ppo
-        dpo
-        kto
+        sft\ppo\dpo\kto\orpo
 ```
 3. ChatGLM：
 ```
