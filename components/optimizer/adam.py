@@ -29,6 +29,7 @@ class CustomAdam(optim.Optimizer):
         self.m_post = []
         self.v_post = []
         # self.g_post = []
+        self.t = 1
         self.β_1 = β_1
         self.β_2 = β_2
         
@@ -52,10 +53,14 @@ class CustomAdam(optim.Optimizer):
                     v_t = (1 - self.β_2) * g_t ** 2
                 else:
                     v_t = self.β_2 * self.v_post[-len(group['params'])] + (1 - self.β_2) * g_t ** 2
-                η_t  = -group['lr'] * m_t / torch.sqrt(v_t)
+
+                m_t_hat = m_t / (1 - self.β_1**self.t)  
+                v_t_hat = v_t / (1 - self.β_2**self.t)
+                η_t  = -group['lr'] * m_t_hat / torch.sqrt(v_t_hat)
                 param.data.add_(η_t)
                 self.m_post.append(m_t)
                 self.v_post.append(v_t)
+                self.t += 1
                 """
                 param.data：这是一个张量，表示模型参数的当前值。通过.data属性，我们可以直接访问和修改这些值，而不需要计算图的跟踪（即不记录这些操作，以避免影响梯度计算）。
                 add_：这是PyTorch中的一个原地（in-place）加法操作。它会直接修改param.data的值，而不是返回一个新的张量。add_函数的格式是param.data.add_(value)，其中value是要加到param.data上的值。
