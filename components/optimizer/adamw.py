@@ -1,8 +1,9 @@
 """
+adamw与adam算法本质上没有什么区别只是将权重的L2正则化不在加到loss里面及结算g_t；而是直接写到权重更新的公式中；
 SGD对应取值: m_t = β_1 * m_(t-1) + (1 - β_1) * g_t   v_t = β_2 * v_(t-1) + (1-β_2) * (g_t**2);
 修正: m_t_hat = m_t / (1 - β_1**t)  v_t_hat = v_t / (1 - β_2**t)
 故 η_t  = lr * m_t_hat / aqrt(v_t_hat);
-w_new = w_t - lr * m_t_hat / aqrt(v_t_hat);
+w_new = w_t - lr * m_t_hat / aqrt(v_t_hat) - lr * λ * w_t;
 """
 
 
@@ -23,7 +24,7 @@ class MyModel(nn.Module):
 
 # 定义一个自定义优化器
 class CustomAdam(optim.Optimizer):
-    def __init__(self, params, lr=0.01, β_1=0.9, β_2=0.999):
+    def __init__(self, params, lr=0.01, β_1=0.9, β_2=0.999, λ=0.5):
         defaults = dict(lr=lr)
         super(CustomAdam, self).__init__(params, defaults)
         self.m_post = []
@@ -32,6 +33,7 @@ class CustomAdam(optim.Optimizer):
         self.t = 1
         self.β_1 = β_1
         self.β_2 = β_2
+        self.λ = λ
         
     def step(self, closure=None):
         loss = None
@@ -56,7 +58,7 @@ class CustomAdam(optim.Optimizer):
 
                 m_t_hat = m_t / (1 - self.β_1**self.t)  
                 v_t_hat = v_t / (1 - self.β_2**self.t)
-                η_t  = -group['lr'] * m_t_hat / torch.sqrt(v_t_hat)
+                η_t  = -group['lr'] * (m_t_hat / torch.sqrt(v_t_hat) - self.λ * param.data)
                 param.data.add_(η_t)
                 self.m_post.append(m_t)
                 self.v_post.append(v_t)
